@@ -47,15 +47,19 @@ with upload_data:
 
 with preporcessing:
     st.write("""# Preprocessing""")
-    df[["No","Weight","Length","Circumference"]].agg(['min','max'])
+    X = df.drop(labels = 'Grade',axis = 1)
+    y = df['Grade'].map({'A': 0, 'B': 1})
+    #df[["No","Weight","Length","Circumference"]].agg(['min','max'])
 
-    df.Grade.value_counts()
-    df = df.drop(columns=["No"])
+    #df.Grade.value_counts()
+    #df = df.drop(columns=["No"])
 
-    X = df.drop(columns="Grade")
-    y = df.Grade
-    "### Membuang fitur yang tidak diperlukan"
-    df
+    #X = df.drop(columns="Grade")
+    #y = df.Grade
+    #"### Membuang fitur yang tidak diperlukan"
+    #df
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state = 88)
 
     le = preprocessing.LabelEncoder()
     le.fit(y)
@@ -123,12 +127,30 @@ with modeling:
     # akurasi = 10
 
     # KNN 
-    K=10
-    knn=KNeighborsClassifier(n_neighbors=K)
-    knn.fit(X_train,y_train)
-    y_pred=knn.predict(X_test)
+    # Build a function for choosing reasonable K value
 
-    skor_akurasi = round(100 * accuracy_score(y_test,y_pred))
+    error_rates = []
+
+    for k in range(1,30):
+        knn_model = KNeighborsClassifier(n_neighbors=k)
+        knn_model.fit(scaled_X_train,y_train)
+        y_knn_predict = knn_model.predict(scaled_X_test)
+        
+        error_k = 1 - accuracy_score(y_test,y_knn_predict)
+        
+        error_rates.append(error_k)
+
+        knn_model = KNeighborsClassifier(n_neighbors=5)
+        knn_model.fit(scaled_X_train,y_train)
+        y_knn_predict = knn_model.predict(scaled_X_test)
+
+        skor_akurasi = round(100 * accuracy_score(y_test,y_knn_predict))
+    #K=10
+    #knn=KNeighborsClassifier(n_neighbors=K)
+    #knn.fit(X_train,y_train)
+    #y_pred=knn.predict(X_test)
+
+    #skor_akurasi = round(100 * accuracy_score(y_test,y_pred))
 
     # DT
 
