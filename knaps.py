@@ -5,6 +5,7 @@ from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
 from numpy import array
 from sklearn import tree
 from sklearn.naive_bayes import GaussianNB
@@ -106,24 +107,30 @@ with modeling:
     st.write("""# Modeling """)
     st.subheader("Berikut ini adalah pilihan untuk Modeling")
     st.write("Pilih Model yang Anda inginkan untuk Cek Akurasi")
-    naive = st.checkbox('Naive Bayes')
+    lr = st.checkbox('LogisticRegression')
     kn = st.checkbox('K-Nearest Neighbor')
     des = st.checkbox('Decision Tree')
     mod = st.button("Modeling")
 
-    # NB
-    GaussianNB(priors=None)
+    # LR
+    metode1 = LogisticRegression()
+    metode1.fit(scaled_X_train,y_train)
+    metode1.coef_
+    y_pred = metode1.predict(scaled_X_test)
+
+    akurasi = round(100 * accuracy_score(y_test, y_pred))
+    #GaussianNB(priors=None)
 
     # Fitting Naive Bayes Classification to the Training set with linear kernel
-    nvklasifikasi = GaussianNB()
-    nvklasifikasi = nvklasifikasi.fit(X_train, y_train)
+    #nvklasifikasi = GaussianNB()
+    #nvklasifikasi = nvklasifikasi.fit(X_train, y_train)
 
     # Predicting the Test set results
-    y_pred = nvklasifikasi.predict(X_test)
+    #y_pred = nvklasifikasi.predict(X_test)
     
-    y_compare = np.vstack((y_test,y_pred)).T
-    nvklasifikasi.predict_proba(X_test)
-    akurasi = round(100 * accuracy_score(y_test, y_pred))
+    #y_compare = np.vstack((y_test,y_pred)).T
+    #nvklasifikasi.predict_proba(X_test)
+    #akurasi = round(100 * accuracy_score(y_test, y_pred))
     # akurasi = 10
 
     # KNN 
@@ -166,9 +173,9 @@ with modeling:
     #Accuracy
     akurasiii = round(100 * accuracy_score(y_test,y_pred))
 
-    if naive :
+    if lr :
         if mod :
-            st.write('Model Naive Bayes accuracy score: {0:0.2f}'. format(akurasi))
+            st.write('Model Logistic Regression accuracy score: {0:0.2f}'. format(akurasi))
     if kn :
         if mod:
             st.write("Model KNN accuracy score : {0:0.2f}" . format(skor_akurasi))
@@ -181,7 +188,7 @@ with modeling:
         # st.snow()
         source = pd.DataFrame({
             'Nilai Akurasi' : [akurasi,skor_akurasi,akurasiii],
-            'Nama Model' : ['Naive Bayes','KNN','Decision Tree']
+            'Nama Model' : ['Logistic Regression','KNN','Decision Tree']
         })
 
         bar_chart = alt.Chart(source).mark_bar().encode(
