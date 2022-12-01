@@ -75,9 +75,9 @@ with preporcessing:
     "### Label"
     labels
 
-    scaler = MinMaxScaler()
-    scaler.fit(X)
-    X = scaler.transform(X)
+    scaler1 = MinMaxScaler()
+    scaler1.fit(X)
+    X = scaler1.transform(X)
     "### Normalize data transformasi"
     X
 
@@ -90,9 +90,9 @@ with preporcessing:
     "### Label"
     labels
 
-    scaler = MinMaxScaler()
-    scaler.fit(X)
-    X = scaler.transform(X)
+    scaler1 = MinMaxScaler()
+    scaler1.fit(X)
+    X = scaler1.transform(X)
     X
 
     X.shape, y.shape
@@ -130,6 +130,10 @@ with modeling:
     # Build a function for choosing reasonable K value
 
     error_rates = []
+
+    scaler = StandardScaler()
+    scaled_X_train = scaler.fit_transform(X_train)
+    scaled_X_test = scaler.transform(X_test)
 
     for k in range(1,30):
         knn_model = KNeighborsClassifier(n_neighbors=k)
